@@ -18,17 +18,18 @@ class Train
   end
 
   def add_car
-    @car_count += 1 unless moving?
+    @car_count += 1 if stopped?
   end
 
   def remove_car
-    @car_count -= 1 if !moving? && @car_count > 0
+    @car_count -= 1 if !stopped? && @car_count > 0
   end
 
   def take_route(route)
     @route = route
 
     @current_station_index = 0
+    @current_station.add_train(self)
   end
 
   def current_station
@@ -40,20 +41,27 @@ class Train
   end
 
   def previous_station
+    return unless @current_station_index > 0
     @route.stations[@current_station_index - 1]
   end
 
   def move_forward
-    @current_station_index += 1 unless next_station.nil?
+    return if next_station.nil
+    @current_station.send_train
+    @next_station.add_train
+    @current_station_index += 1
   end
 
   def move_backward
-    @current_station_index += 1 unless previous_station.nil?
+    return if previous_station.nil
+    @current_station.send_train
+    @previous_station.add_train
+    @current_station_index -= 1
   end
 
   private
 
-  def moving?
+  def stopped?
     @speed == 0
   end
 end
