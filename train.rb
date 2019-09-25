@@ -47,14 +47,14 @@ class Train
 
   def move_forward
     return if next_station.nil
-    @current_station.send_train(self)
+    current_station.send_train(self)
     @next_station.add_train(self)
     @current_station_index += 1
   end
 
   def move_backward
     return if previous_station.nil
-    @current_station.send_train(self)
+    current_station.send_train(self)
     @previous_station.add_train(self)
     @current_station_index -= 1
   end
